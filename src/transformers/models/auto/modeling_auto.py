@@ -36,6 +36,7 @@ MODEL_MAPPING_NAMES = OrderedDict(
         ("bart", "BartModel"),
         ("beit", "BeitModel"),
         ("bert", "BertModel"),
+        ("lsh", "LSHModel"),
         ("bert-generation", "BertGenerationEncoder"),
         ("big_bird", "BigBirdModel"),
         ("bigbird_pegasus", "BigBirdPegasusModel"),
@@ -213,6 +214,7 @@ MODEL_MAPPING_NAMES = OrderedDict(
         ("xmod", "XmodModel"),
         ("yolos", "YolosModel"),
         ("yoso", "YosoModel"),
+        ("lsh", "LSHModel")
     ]
 )
 
@@ -222,6 +224,7 @@ MODEL_FOR_PRETRAINING_MAPPING_NAMES = OrderedDict(
         ("albert", "AlbertForPreTraining"),
         ("bart", "BartForConditionalGeneration"),
         ("bert", "BertForPreTraining"),
+        ("lsh", "LSHForPreTraining"),
         ("big_bird", "BigBirdForPreTraining"),
         ("bloom", "BloomForCausalLM"),
         ("camembert", "CamembertForMaskedLM"),
@@ -288,6 +291,7 @@ MODEL_WITH_LM_HEAD_MAPPING_NAMES = OrderedDict(
         ("albert", "AlbertForMaskedLM"),
         ("bart", "BartForConditionalGeneration"),
         ("bert", "BertForMaskedLM"),
+        ("lsh", "LSHForMaskedLM"),
         ("big_bird", "BigBirdForMaskedLM"),
         ("bigbird_pegasus", "BigBirdPegasusForConditionalGeneration"),
         ("blenderbot-small", "BlenderbotSmallForConditionalGeneration"),
@@ -368,6 +372,7 @@ MODEL_FOR_CAUSAL_LM_MAPPING_NAMES = OrderedDict(
         # Model for Causal LM mapping
         ("bart", "BartForCausalLM"),
         ("bert", "BertLMHeadModel"),
+        ("lsh", "LSHLMHeadModel"),
         ("bert-generation", "BertGenerationDecoder"),
         ("big_bird", "BigBirdForCausalLM"),
         ("bigbird_pegasus", "BigBirdPegasusForCausalLM"),
@@ -557,6 +562,7 @@ MODEL_FOR_MASKED_LM_MAPPING_NAMES = OrderedDict(
         ("albert", "AlbertForMaskedLM"),
         ("bart", "BartForConditionalGeneration"),
         ("bert", "BertForMaskedLM"),
+        ("lsh", "LSHForMaskedLM"),
         ("big_bird", "BigBirdForMaskedLM"),
         ("camembert", "CamembertForMaskedLM"),
         ("convbert", "ConvBertForMaskedLM"),
@@ -599,6 +605,7 @@ MODEL_FOR_MASKED_LM_MAPPING_NAMES = OrderedDict(
         ("xlm-roberta-xl", "XLMRobertaXLForMaskedLM"),
         ("xmod", "XmodForMaskedLM"),
         ("yoso", "YosoForMaskedLM"),
+        ("lsh", "LSHForMaskedLM")
     ]
 )
 
@@ -672,6 +679,7 @@ MODEL_FOR_SEQUENCE_CLASSIFICATION_MAPPING_NAMES = OrderedDict(
         ("albert", "AlbertForSequenceClassification"),
         ("bart", "BartForSequenceClassification"),
         ("bert", "BertForSequenceClassification"),
+        ("lsh", "LSHForSequenceClassification"),
         ("big_bird", "BigBirdForSequenceClassification"),
         ("bigbird_pegasus", "BigBirdPegasusForSequenceClassification"),
         ("biogpt", "BioGptForSequenceClassification"),
@@ -747,6 +755,7 @@ MODEL_FOR_QUESTION_ANSWERING_MAPPING_NAMES = OrderedDict(
         ("albert", "AlbertForQuestionAnswering"),
         ("bart", "BartForQuestionAnswering"),
         ("bert", "BertForQuestionAnswering"),
+        ("lsh", "LSHForQuestionAnswering"),
         ("big_bird", "BigBirdForQuestionAnswering"),
         ("bigbird_pegasus", "BigBirdPegasusForQuestionAnswering"),
         ("bloom", "BloomForQuestionAnswering"),
@@ -834,6 +843,7 @@ MODEL_FOR_TOKEN_CLASSIFICATION_MAPPING_NAMES = OrderedDict(
         # Model for Token Classification mapping
         ("albert", "AlbertForTokenClassification"),
         ("bert", "BertForTokenClassification"),
+        ("lsh", "LSHForTokenClassification"),
         ("big_bird", "BigBirdForTokenClassification"),
         ("biogpt", "BioGptForTokenClassification"),
         ("bloom", "BloomForTokenClassification"),
@@ -893,6 +903,7 @@ MODEL_FOR_MULTIPLE_CHOICE_MAPPING_NAMES = OrderedDict(
         # Model for Multiple Choice mapping
         ("albert", "AlbertForMultipleChoice"),
         ("bert", "BertForMultipleChoice"),
+        ("lsh", "LSHForMultipleChoice"),
         ("big_bird", "BigBirdForMultipleChoice"),
         ("camembert", "CamembertForMultipleChoice"),
         ("canine", "CanineForMultipleChoice"),
@@ -935,6 +946,7 @@ MODEL_FOR_MULTIPLE_CHOICE_MAPPING_NAMES = OrderedDict(
 MODEL_FOR_NEXT_SENTENCE_PREDICTION_MAPPING_NAMES = OrderedDict(
     [
         ("bert", "BertForNextSentencePrediction"),
+        ("lsh", "LSHForNextSentencePrediction"),
         ("ernie", "ErnieForNextSentencePrediction"),
         ("fnet", "FNetForNextSentencePrediction"),
         ("megatron-bert", "MegatronBertForNextSentencePrediction"),
@@ -1037,6 +1049,7 @@ MODEL_FOR_TEXT_ENCODING_MAPPING_NAMES = OrderedDict(
     [
         ("albert", "AlbertModel"),
         ("bert", "BertModel"),
+        ("lsh", "LSHModel"),
         ("big_bird", "BigBirdModel"),
         ("data2vec-text", "Data2VecTextModel"),
         ("deberta", "DebertaModel"),
