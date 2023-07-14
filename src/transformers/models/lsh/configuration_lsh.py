@@ -122,6 +122,7 @@ class LSHConfig(PretrainedConfig):
         lsh_hash_function="simhash",
         sampling_function="vanilla",
         sampling_num_target_neurons=128,
+        rehashing_interval=1024,
         tie_embeddings=True,
         **kwargs,
     ):
@@ -150,6 +151,7 @@ class LSHConfig(PretrainedConfig):
         self.sampling_function = sampling_function
         self.sampling_num_target_neurons = sampling_num_target_neurons
         self.tie_embeddings = tie_embeddings
+        self.rehashing_interval = rehashing_interval
 
 
 class LSHOnnxConfig(OnnxConfig):

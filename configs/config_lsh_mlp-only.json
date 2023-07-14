@@ -17,6 +17,7 @@
   "num_attention_heads": 12,
   "num_hidden_layers": 12,
   "pad_token_id": 0,
+  "rehashing_interval": 1024,
   "sampling_function": "vanilla",
   "sampling_num_target_neurons": 128,
   "tie_embeddings": true,

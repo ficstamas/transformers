@@ -914,6 +914,8 @@ class LSHModel(LSHPreTrainedModel):
         self.encoder = LSHEncoder(config)
 
         self.pooler = LSHPooler(config) if add_pooling_layer else None
+        self.forward_steps = 0
+        self.rehashing_interval = self.config.rehashing_interval
 
         # Initialize weights and apply final processing
         self.post_init()
@@ -974,6 +976,12 @@ class LSHModel(LSHPreTrainedModel):
             If set to `True`, `past_key_values` key value states are returned and can be used to speed up decoding (see
             `past_key_values`).
         """
+        # rehash
+        if self.training and self.forward_steps % self.rehashing_interval == 0:
+            for module in self.modules():
+                if isinstance(module, LSHLinear):
+                    module.rehash()
+
         output_attentions = output_attentions if output_attentions is not None else self.config.output_attentions
         output_hidden_states = (
             output_hidden_states if output_hidden_states is not None else self.config.output_hidden_states
@@ -1055,6 +1063,7 @@ class LSHModel(LSHPreTrainedModel):
         )
         sequence_output = encoder_outputs[0]
         pooled_output = self.pooler(sequence_output) if self.pooler is not None else None
+        self.forward_steps += 1
 
         if not return_dict:
             return (sequence_output, pooled_output) + encoder_outputs[1:]
