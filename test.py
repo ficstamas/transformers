@@ -1,10 +1,8 @@
-from transformers.models.lsh import LSHForMaskedLM, LSHConfig
-from transformers import AutoModelForSequenceClassification, AutoConfig
+from transformers import AutoModelForMaskedLM, AutoConfig
 
 
-cfg = AutoConfig.from_pretrained("configs/config_lsh_mlp-only.json")
-model = AutoModelForSequenceClassification.from_config(cfg)
+# cfg = AutoConfig.from_pretrained("configs/config_lsh_mlp-only.json")
+model = AutoModelForMaskedLM.from_pretrained("test_lsh_model/")
 
-out = model(**model.dummy_inputs)
-
+# model.save_pretrained("test_lsh_model/")
 breakpoint()

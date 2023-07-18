@@ -23,5 +23,5 @@
   "tie_embeddings": true,
   "transformers_version": "4.31.0.dev0",
   "type_vocab_size": 1,
-  "vocab_size": 30522
+  "vocab_size": 50265
 }

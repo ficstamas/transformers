@@ -3,6 +3,7 @@ from typing import Type
 
 import torch
 import torch.nn as nn
+import numpy as np
 
 from .hash.base import HashFunction
 from .sampling.base import Sampling
@@ -31,6 +32,8 @@ class LSHLinear(nn.Module):
         super().__init__()
         self.num_tables, self.num_hashes = num_tables, num_hashes
 
+        self.num_tables = num_tables
+        self.num_hashes = num_hashes
         self.hash = hash_module(input_dim, num_tables, num_hashes)
         self.sampling = sampling_module(**sampling_config)
         self.linear = nn.Linear(input_dim, output_dim, bias=bias)
@@ -81,12 +84,27 @@ class LSHLinear(nn.Module):
                 self.tables[table][hash_.item()].append(neuron)
 
     def get_extra_state(self) -> OrderedDict:
-        state = OrderedDict()
-        state["tables"] = self.tables
-        return state
+        size = np.max(np.array([[len(bucket) for bucket in table] for table in self.tables]))
+        tensor = -torch.ones((self.num_tables, 2**self.num_hashes, size), dtype=torch.long)
+        for i in range(len(self.tables)):
+            table = self.tables[i]
+            for j in range(len(table)):
+                bucket = table[j]
+                for k in range(len(bucket)):
+                    value = bucket[k]
+                    tensor[i, j, k] = value
+        return tensor
 
-    def set_extra_state(self, state: OrderedDict):
-        self.tables = state["tables"]
+    def set_extra_state(self, state):
+        tensor = state
+        self.tables = [[[] for j in range(2**self.num_hashes)] for i in range(self.num_tables)]
+        for i in range(tensor.shape[0]):
+            for j in range(tensor.shape[1]):
+                for k in range(tensor.shape[2]):
+                    value = tensor[i, j, k].item()
+                    if value == -1:
+                        break
+                    self.tables[i][j].append(value)
 
 
 # python model_training.py --directory "temp/" --accelerator "gpu" --batch_size 2
