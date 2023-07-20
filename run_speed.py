@@ -1,7 +1,7 @@
 from subprocess import run
 import time
 
-modules = ["torch-linear", "lsh-linear", "lsh-linear-script"]
+modules = ["torch-linear", "lsh-linear", "lsh-linear-strided"]
 trials = 50
 
 k = 0
