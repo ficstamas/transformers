@@ -1,3 +1,6 @@
-from .vanilla import VanillaSampling
+from .vanilla import VanillaSampling, VanillaSamplingStrided
 
-STR2SAMPLING = {"vanilla": VanillaSampling}
+STR2SAMPLING = {
+    "vanilla": VanillaSampling,
+    "vanilla_strided": VanillaSamplingStrided
+}

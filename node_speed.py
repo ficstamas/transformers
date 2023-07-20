@@ -14,6 +14,7 @@ def main():
         layer = LSHLinear(768, 3072, 30, 7, STR2HASH["simhash"], STR2SAMPLING["vanilla"], {"sampling_num_target_neurons": 128})
     elif args.module == "lsh-linear-strided":
         layer = LSHLinearStrided(768, 3072, 30, 7, STR2HASH["simhash"], STR2SAMPLING["vanilla"], {"sampling_num_target_neurons": 128})
+        layer = torch.jit.script(layer)
     else:
         raise NotImplementedError
 
@@ -21,8 +22,16 @@ def main():
         layer = layer.cuda()
         inp = inp.cuda()
 
-    layer(inp)
-    breakpoint()
+    perf_counter = []
+    for _ in range(50):
+        start = time.perf_counter()
+        layer(inp)
+        end = time.perf_counter()
+        perf_counter.append(end - start)
+
+    file_name = f"{args.module}_{args.device}_runtime.txt"
+    with open(file_name, mode="a") as f:
+        f.write(f"{np.mean(perf_counter).item()} {np.std(perf_counter).item()}\n")
 
 
 if __name__ == '__main__':
