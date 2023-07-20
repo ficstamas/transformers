@@ -14,7 +14,6 @@ def main():
         layer = LSHLinear(768, 3072, 30, 7, STR2HASH["simhash"], STR2SAMPLING["vanilla"], {"sampling_num_target_neurons": 128})
     elif args.module == "lsh-linear-strided":
         layer = LSHLinearStrided(768, 3072, 30, 7, STR2HASH["simhash"], STR2SAMPLING["vanilla"], {"sampling_num_target_neurons": 128})
-        layer = torch.jit.script(layer)
     else:
         raise NotImplementedError
 
