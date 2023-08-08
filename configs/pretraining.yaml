@@ -2,19 +2,18 @@ cnt_epochs: 3
 uncase: False
 batch_size: 16
 max_length: 128
+tokenizer_name: "roberta-base"
 model_name: "../transformers/configs/config_lsh_mlp-only.json"
-# path_corpus: "./data/sense"
-# path_val_corpus: "./data/sense_small"
-path_corpus: "./tests/test_data/tokenized/sense/bert-base-uncased/128/"
-# TODO: use same tokenized format for val
-path_val_corpus: "./tests/test_data/sense/sense.txt"
-path_results: ./lsh_run/
+path_corpus: "/mnt/storage/data/Corpora/tokenized/wiki-c4-amazon-pile-etc/roberta-base/512/tokenized.jsonl"
+# path_val_corpus: "./tests/test_data/sense/sense.txt"
+path_results: ./tmp/lsh_run/
 initial_lr: 1e-4
 cnt_samples_per_epoch: 100
 suffix: test
 minutes_between_snapshots: 40
+max_length: 512
 callbacks:
-  monitor:
+  hashing:
     working_directory: "../transformers/src/"
     module: transformers.models.lsh.callbacks
     class_name: AttachCallback

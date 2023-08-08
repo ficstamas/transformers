@@ -3,7 +3,7 @@ import math
 import pytorch_lightning as pl
 from lightning import Callback
 
-from hashing.node import LSHLinear
+from .hashing.node import LSHLinear
 
 
 def scheduler(lamb, n_0, t):
