@@ -34,5 +34,9 @@ class ReHashingCallback(Callback):
 
 
 class AttachCallback(Callback):
-    def on_train_start(self, trainer: "pl.Trainer", pl_module: "pl.LightningModule") -> None:
+    def on_fit_start(self, trainer: "pl.Trainer", pl_module: "pl.LightningModule") -> None:
+        for cb in trainer.callbacks:
+            if isinstance(cb, ReHashingCallback):
+                return
+        print(">>>>>>>>>>>>>>>>y ATTACHED CALLBACK <<<<<<<<<<<<<<<<<<<<<<<")
         trainer.callbacks.insert(0, ReHashingCallback(pl_module.get_cnt_training_steps()))
