@@ -4,6 +4,7 @@ import pytorch_lightning as pl
 from lightning import Callback
 
 from .hashing.node import LSHLinear
+from time import perf_counter
 
 
 def scheduler(lamb, n_0, t):
@@ -22,15 +23,19 @@ class ReHashingCallback(Callback):
         self.state["rehash_scheduler"] = self.state["rehash_scheduler"][::dilution_step] + [
             max_steps,
         ]
+        print(f"Max number of steps: {max_steps}")
+        print("Rehash Intervals: ", self.state["rehash_scheduler"])
 
     def on_after_backward(self, trainer: "pl.Trainer", pl_module: "pl.LightningModule") -> None:
         self.state["step"] += 1
 
         if self.state["step"] >= self.state["rehash_scheduler"][self.state["next_rehash"]]:
+            t1 = perf_counter()
             for module in pl_module.modules():
                 if isinstance(module, LSHLinear):
                     module.rehash()
             self.state["next_rehash"] += 1
+            print(f"Rehashed parameters! {perf_counter()-t1}s")
 
 
 class AttachCallback(Callback):
@@ -38,5 +43,6 @@ class AttachCallback(Callback):
         for cb in trainer.callbacks:
             if isinstance(cb, ReHashingCallback):
                 return
-        print(">>>>>>>>>>>>>>>>y ATTACHED CALLBACK <<<<<<<<<<<<<<<<<<<<<<<")
+        print(">>>>>>>>>>>>>>>>> ATTACHED CALLBACK <<<<<<<<<<<<<<<<<<<<<<<")
         trainer.callbacks.insert(0, ReHashingCallback(pl_module.get_cnt_training_steps()))
+        print("===========================================================")
