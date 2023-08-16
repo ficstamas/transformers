@@ -11,7 +11,7 @@ gradient_clip_val: 10.0
 weight_decay: 0.01
 log_every_n_steps: 100
 max_length: 512
-path_results: "/storage/data/Model_snapshots"
+path_results: "/storage/ficsort/model_snapshots"
 accumulate_batches:
   0: 1
   4: 2
