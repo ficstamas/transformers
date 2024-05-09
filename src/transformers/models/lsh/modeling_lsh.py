@@ -21,6 +21,7 @@ import os
 import warnings
 from dataclasses import dataclass
 from typing import List, Optional, Tuple, Union
+from sparse_kernels.modules.lsh.hyperplane.mlp_gelu import MLP
 
 import torch
 import torch.utils.checkpoint
@@ -478,6 +479,22 @@ class LSHOutput(nn.Module):
         return hidden_states
 
 
+class HyperplaneMLP(torch.nn.Module):
+    def __init__(self, config):
+        super().__init__()
+        self.mlp = MLP(
+            config.lsh_tables, config.lsh_functions, config.hidden_size, config.intermediate_size, config.hidden_size,
+            config.target_sparsity
+            )
+        self.layer_norm = torch.nn.LayerNorm(config.hidden_size, eps=config.layer_norm_eps)
+        self.dropout = torch.nn.Dropout(config.hidden_dropout_prob)
+
+    def forward(self, x):
+        hs, _, _ = self.mlp(x)
+        hs = self.dropout(hs)
+        hs = self.layer_norm(hs + x)
+        return hs
+
 # Copied from transformers.models.bert.modeling_bert.BertLayer with Bert->LSH
 class LSHLayer(nn.Module):
     def __init__(self, config):
@@ -491,8 +508,7 @@ class LSHLayer(nn.Module):
             if not self.is_decoder:
                 raise ValueError(f"{self} should be used as a decoder model if cross attention is added")
             self.crossattention = LSHAttention(config, position_embedding_type="absolute")
-        self.intermediate = LSHIntermediate(config)
-        self.output = LSHOutput(config)
+        self.mlp_module = HyperplaneMLP(config)
 
     def forward(
         self,
@@ -548,9 +564,7 @@ class LSHLayer(nn.Module):
             cross_attn_present_key_value = cross_attention_outputs[-1]
             present_key_value = present_key_value + cross_attn_present_key_value
 
-        layer_output = apply_chunking_to_forward(
-            self.feed_forward_chunk, self.chunk_size_feed_forward, self.seq_len_dim, attention_output
-        )
+        layer_output = self.mlp_module(attention_output)
         outputs = (layer_output,) + outputs
 
         # if decoder, return the attn key/values as the last output

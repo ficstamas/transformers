@@ -115,13 +115,9 @@ class LSHConfig(PretrainedConfig):
         layer_norm_eps=1e-12,
         pad_token_id=0,
         classifier_dropout=None,
-        attention_type="bert",
-        lsh_location="mlp",
-        lsh_tables=30,
-        lsh_functions=7,
-        lsh_hash_function="simhash",
-        sampling_function="vanilla",
-        sampling_num_target_neurons=128,
+        lsh_tables=8,
+        lsh_functions=12,
+        target_sparsity=128,
         rehashing_interval=1024,
         tie_embeddings=True,
         **kwargs,
@@ -141,15 +137,10 @@ class LSHConfig(PretrainedConfig):
         self.initializer_range = initializer_range
         self.layer_norm_eps = layer_norm_eps
         self.classifier_dropout = classifier_dropout
-        # bert or reformer (lsh attention)
-        self.attention_type = attention_type
         # mlp, attention, mlp_and_attention
-        self.lsh_location = lsh_location
         self.lsh_tables = lsh_tables
         self.lsh_functions = lsh_functions
-        self.lsh_hash_function = lsh_hash_function
-        self.sampling_function = sampling_function
-        self.sampling_num_target_neurons = sampling_num_target_neurons
+        self.target_sparsity = target_sparsity
         self.tie_embeddings = tie_embeddings
         self.rehashing_interval = rehashing_interval
 
