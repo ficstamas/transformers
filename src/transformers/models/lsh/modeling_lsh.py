@@ -760,12 +760,10 @@ class LSHPreTrainingHeads(nn.Module):
     def __init__(self, config):
         super().__init__()
         self.predictions = LSHLMPredictionHead(config)
-        self.seq_relationship = nn.Linear(config.hidden_size, 2)
 
     def forward(self, sequence_output, pooled_output):
         prediction_scores = self.predictions(sequence_output)
-        seq_relationship_score = self.seq_relationship(pooled_output)
-        return prediction_scores, seq_relationship_score
+        return prediction_scores
 
 
 # Copied from transformers.models.bert.modeling_bert.BertPreTrainedModel with Bert->LSH,bert->lsh
@@ -830,8 +828,8 @@ class LSHForPreTrainingOutput(ModelOutput):
     """
 
     loss: Optional[torch.FloatTensor] = None
+    logits: torch.FloatTensor = None
     prediction_logits: torch.FloatTensor = None
-    seq_relationship_logits: torch.FloatTensor = None
     hidden_states: Optional[Tuple[torch.FloatTensor]] = None
     attentions: Optional[Tuple[torch.FloatTensor]] = None
 
@@ -1120,7 +1118,6 @@ class LSHForPreTraining(LSHPreTrainedModel):
         head_mask: Optional[torch.Tensor] = None,
         inputs_embeds: Optional[torch.Tensor] = None,
         labels: Optional[torch.Tensor] = None,
-        next_sentence_label: Optional[torch.Tensor] = None,
         output_attentions: Optional[bool] = None,
         output_hidden_states: Optional[bool] = None,
         return_dict: Optional[bool] = None,
@@ -1172,23 +1169,22 @@ class LSHForPreTraining(LSHPreTrainedModel):
         )
 
         sequence_output, pooled_output = outputs[:2]
-        prediction_scores, seq_relationship_score = self.cls(sequence_output, pooled_output)
+        prediction_scores = self.cls(sequence_output, pooled_output)
 
         total_loss = None
-        if labels is not None and next_sentence_label is not None:
+        if labels is not None:
             loss_fct = CrossEntropyLoss()
             masked_lm_loss = loss_fct(prediction_scores.view(-1, self.config.vocab_size), labels.view(-1))
-            next_sentence_loss = loss_fct(seq_relationship_score.view(-1, 2), next_sentence_label.view(-1))
-            total_loss = masked_lm_loss + next_sentence_loss
+            total_loss = masked_lm_loss
 
         if not return_dict:
-            output = (prediction_scores, seq_relationship_score) + outputs[2:]
+            output = (prediction_scores, ) + outputs[2:]
             return ((total_loss,) + output) if total_loss is not None else output
 
         return LSHForPreTrainingOutput(
             loss=total_loss,
+            logits=prediction_scores,
             prediction_logits=prediction_scores,
-            seq_relationship_logits=seq_relationship_score,
             hidden_states=outputs.hidden_states,
             attentions=outputs.attentions,
         )
